@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Tumor Classifier{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="{{ url_for('home') }}">Tumor Classifier</a>
+    <nav>
+      <a href="{{ url_for('about_bc') }}">About Breast Cancer</a>
+      <a href="{{ url_for('about_us') }}">About Us</a>
+      <a href="{{ url_for('contact') }}">Contact Us</a>
+      <a class="btn" href="{{ url_for('try_it_out') }}">Try it out</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <p class="muted">© 2025 Tumor Classifier</p>
+</footer>
+</body>
+</html>

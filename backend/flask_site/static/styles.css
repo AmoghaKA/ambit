@@ -1,0 +1,12 @@
+body { font-family: system-ui; background: #0b0c10; color: #e6e6e6; margin: 0; }
+.nav { padding: 1rem; background: #111218; border-bottom: 1px solid #2a2f3a; }
+.nav-inner { display: flex; justify-content: space-between; align-items: center; }
+.nav a { color: #e6e6e6; margin-left: 12px; text-decoration: none; }
+.btn { background: #4f46e5; padding: 8px 12px; border-radius: 8px; }
+.card { background: #111218; margin: 1rem auto; padding: 1rem; border-radius: 8px; max-width: 800px; }
+textarea { width: 100%; border: 1px solid #2a2f3a; border-radius: 6px; padding: 10px; background: #0f1117; color: #e6e6e6; }
+.actions { display: flex; gap: 8px; margin-top: 10px; }
+button { background: #4f46e5; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+button.secondary { background: transparent; border: 1px solid #2a2f3a; }
+pre { background: #0f1117; border-radius: 6px; padding: 10px; overflow-x: auto; }
+.muted { color: #9aa0a6; }

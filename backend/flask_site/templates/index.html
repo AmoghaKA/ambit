@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Predict Tumor Type Instantly</h1>
+  <p class="muted">Use AI to predict if a tumor is benign or malignant from diagnostic features.</p>
+  <a class="btn" href="{{ url_for('try_it_out') }}">Try it out</a>
+</section>
+{% endblock %}

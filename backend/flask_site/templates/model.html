@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Try it out{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>Single Prediction</h2>
+  <textarea id="features" rows="4" placeholder="Enter 30 numeric values..."></textarea>
+  <div class="actions">
+    <button id="predictBtn">Predict</button>
+    <button class="secondary" id="clearBtn">Clear</button>
+  </div>
+  <pre id="singleResult" class="mt16"></pre>
+</section>
+
+<section class="card">
+  <h2>Batch Prediction (CSV)</h2>
+  <input type="file" id="csvFile" accept=".csv">
+  <div class="actions">
+    <button id="csvBtn">Predict CSV</button>
+  </div>
+  <pre id="csvResult" class="mt16"></pre>
+</section>
+
+<script>
+document.getElementById("predictBtn").onclick = async () => {
+  const area = document.getElementById("features");
+  const resBox = document.getElementById("singleResult");
+  resBox.textContent = "Predicting...";
+  const nums = area.value.split(/[\s,]+/).filter(Boolean).map(Number);
+  if (nums.length !== 30 || nums.some(isNaN)) {
+    resBox.textContent = "Please enter exactly 30 numbers.";
+    return;
+  }
+  const r = await fetch("{{ url_for('ml_predict') }}", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ features: nums })
+  });
+  resBox.textContent = JSON.stringify(await r.json(), null, 2);
+};
+document.getElementById("clearBtn").onclick = () => {
+  document.getElementById("features").value = "";
+  document.getElementById("singleResult").textContent = "";
+};
+
+document.getElementById("csvBtn").onclick = async () => {
+  const fileInput = document.getElementById("csvFile");
+  const resBox = document.getElementById("csvResult");
+  if (!fileInput.files.length) {
+    resBox.textContent = "Please select a CSV file first.";
+    return;
+  }
+  const fd = new FormData();
+  fd.append("file", fileInput.files[0]);
+  const r = await fetch("{{ url_for('ml_predict_csv') }}", { method: "POST", body: fd });
+  resBox.textContent = JSON.stringify(await r.json(), null, 2);
+};
+</script>
+{% endblock %}
