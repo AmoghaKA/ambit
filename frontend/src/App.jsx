@@ -8,7 +8,7 @@ function LandingPage({ onTryNow }) {
         <div className="custom-logo-row">
           <div className="custom-logo-circle">
             {/* Placeholder for logo icon */}
-            <span  className="custom-logo-icon">★</span>
+            <img src="/rib.jpg" alt="OncoScan logo" className="custom-logo-img" />
           </div>
           <span className="custom-logo-text">OncoScan AI</span>
         </div>
@@ -22,9 +22,9 @@ function LandingPage({ onTryNow }) {
       <main className="custom-landing-main">
         <section className="custom-landing-content">
           <h1 className="custom-landing-title">
-            Empowering Early<br />
-            Detection, Enhancing<br />
-            Peace of Mind
+            Early Detection,<br />
+            Early Prevention<br />
+           
           </h1>
           <button className="custom-landing-cta" onClick={onTryNow}>Try Now <span className="custom-cta-arrow">→</span></button>
           <div className="custom-landing-features">
@@ -53,10 +53,48 @@ function LandingPage({ onTryNow }) {
         </section>
       </main>
       <footer className="custom-landing-footer">
-        <span>Copyright &copy; 2025 all rights are reserved | fictive/marketing/monstrert | footer@monstrert.com</span>
-        <span className="custom-footer-links">
-          Privacy policy / terms / sitemap | privacy-tos
-        </span>
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3>OncoScan AI</h3>
+            <p>Empowering early detection through advanced AI technology for breast cancer diagnosis.</p>
+            <div className="social-links">
+              <a href="#" className="social-link">LinkedIn</a>
+              <a href="#" className="social-link">Twitter</a>
+              <a href="#" className="social-link">Facebook</a>
+            </div>
+          </div>
+          <div className="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">How It Works</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">API Reference</a></li>
+              <li><a href="#">Support</a></li>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Cookie Policy</a></li>
+              <li><a href="#">Disclaimer</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p>&copy; 2025 OncoScan AI. All rights reserved.</p>
+          <p>Made with ❤️ for better healthcare</p>
+        </div>
       </footer>
     </div>
   )

@@ -51,7 +51,7 @@ header h1 {
   text-fill-color: transparent;
   letter-spacing: 2px;
   margin: 0;
-  text-shadow: 0 2px 12px #ffb6d5aa;
+  text-shadow: 0 2px 12px #0b0106aa;
 }
 
 .card {
@@ -515,11 +515,34 @@ footer {
   font-family: 'Quicksand', 'Inter', 'Poppins', Arial, sans-serif;
 }
 .custom-landing-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2.2rem 2.8rem 1.2rem 2.8rem;
-  background: transparent;
+  padding: 1.2rem 2.8rem; /* reduce default padding for fixed header */
+  background: rgba(42, 19, 51, 0.55); /* semi-transparent dark backdrop */
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  box-shadow: 0 6px 20px rgba(10,10,15,0.35);
+}
+
+/* Push landing content down so it isn't hidden behind fixed header */
+.custom-landing-bg > .custom-landing-main, .custom-landing-bg > .custom-landing-content {
+  margin-top: 86px; /* space equal to header height (adjust if header size changes) */
+}
+
+/* Ensure logo and nav still align in smaller screens */
+@media (max-width: 700px) {
+  .custom-landing-header {
+    padding: 0.9rem 1rem;
+  }
+  .custom-nav { gap: 1rem; }
+  .custom-landing-bg > .custom-landing-main, .custom-landing-bg > .custom-landing-content {
+    margin-top: 120px; /* slightly larger top margin on small devices to accommodate stacked header */
+  }
 }
 .custom-logo-row {
   display: flex;
@@ -539,6 +562,13 @@ footer {
 .custom-logo-icon {
   font-size: 1.5rem;
   color: #6dd5ed;
+}
+.custom-logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 .custom-logo-text {
   font-size: 1.5rem;
@@ -671,27 +701,119 @@ footer {
 }
 .custom-women-image {
   width: 100%;
-  max-width: 400px;
+  max-width: 700px; /* increased from 400px to allow a bigger image */
   height: auto;
   object-fit: contain;
 }
 .custom-landing-footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.2rem 2.8rem 1.2rem 2.8rem;
-  background: transparent;
+  background: linear-gradient(135deg, #2a1333 0%, #3a1a3d 100%);
   color: #fff;
-  font-size: 0.98rem;
-  opacity: 0.85;
-  border-top: 1px solid #b8c6e7aa;
-  margin-top: 2.5rem;
+  padding: 3rem 2rem 2.5rem 2rem; /* increased bottom padding for more breathing room */
+  margin-top: 8rem; /* pushed footer further down */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
-.custom-footer-links {
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+}
+
+.footer-section h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffd6a0;
+  letter-spacing: 1px;
+}
+
+.footer-section h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #ffb6d5;
+  letter-spacing: 0.5px;
+}
+
+.footer-section p {
+  color: #b8c6e7;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
   font-size: 0.95rem;
-  opacity: 0.7;
-  margin-left: 1.5rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.7rem;
+}
+
+.footer-section ul li a {
+  color: #b8c6e7;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: #ffb6d5;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-link {
+  color: #b8c6e7;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  color: #ffb6d5;
+  border-color: #ffb6d5;
+  background: rgba(255, 182, 213, 0.1);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+  text-align: center;
+  color: #b8c6e7;
+  font-size: 0.9rem;
+}
+
+.footer-bottom p {
+  margin: 0.3rem 0;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+  
+  .custom-landing-footer {
+    padding: 2rem 1rem 1rem 1rem;
+  }
 }
 @media (max-width: 1100px) {
   .custom-landing-main {
@@ -750,21 +872,33 @@ footer {
 }
 
 .back-button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: none;
+  background: linear-gradient(90deg, #0f1724 0%, #1f2a37 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.06);
   padding: 0.8rem 1.5rem;
   border-radius: 0.8rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   margin-right: 2rem;
-  transition: all 0.3s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow: 0 6px 18px rgba(15,20,36,0.32);
 }
 
 .back-button:hover {
-  background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(15,20,36,0.42);
+  filter: brightness(1.06);
+}
+
+.back-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.12), 0 10px 30px rgba(15,20,36,0.42);
+}
+
+.back-button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(15,20,36,0.32);
 }
 
 .prediction-header h1 {
@@ -773,6 +907,19 @@ footer {
   font-weight: 900;
   margin: 0;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  -webkit-text-fill-color: #ffffff !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+}
+
+.prediction-page .prediction-header h1 {
+  color: #ffffff !important;
+}
+
+.prediction-page header h1 {
+  color: #ffffff !important;
 }
 
 .prediction-main {
