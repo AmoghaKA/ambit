@@ -1,22 +1,24 @@
 import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom'
 import './styles.css'
+import CancerDetection from './pages/CancerDetection'
 
-function LandingPage({ onTryNow }) {
+function LandingPage() {
+  const navigate = useNavigate()
+  
   return (
     <div className="custom-landing-bg">
       <header className="custom-landing-header">
         <div className="custom-logo-row">
           <div className="custom-logo-circle">
-            {/* Placeholder for logo icon */}
             <img src="/rib.jpg" alt="OncoScan logo" className="custom-logo-img" />
           </div>
           <span className="custom-logo-text">OncoScan AI</span>
         </div>
         <nav className="custom-nav">
-        <a href="breast" className="custom-nav-link">About Breast Cancer</a>
-          <a href="about" className="custom-nav-link">About Us</a>
-          <a href="us" className="custom-nav-link">Contact Us</a>
-          
+          <Link to="/breast" className="custom-nav-link">About Breast Cancer</Link>
+          <Link to="/about" className="custom-nav-link">About Us</Link>
+          <Link to="/contact" className="custom-nav-link">Contact Us</Link>
         </nav>
       </header>
       <main className="custom-landing-main">
@@ -24,9 +26,10 @@ function LandingPage({ onTryNow }) {
           <h1 className="custom-landing-title">
             Early Detection,<br />
             Early Prevention<br />
-           
           </h1>
-          <button className="custom-landing-cta" onClick={onTryNow}>Try Now <span className="custom-cta-arrow">→</span></button>
+          <button className="custom-landing-cta" onClick={() => navigate('/detect')}>
+            Try Now <span className="custom-cta-arrow">→</span>
+          </button>
           <div className="custom-landing-features">
             <div className="custom-feature">
               <span className="custom-feature-icon">🛡️</span>
@@ -66,10 +69,10 @@ function LandingPage({ onTryNow }) {
           <div className="footer-section">
             <h4>Quick Links</h4>
             <ul>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">How It Works</a></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/detect">How It Works</Link></li>
               <li><a href="#">Pricing</a></li>
-              <li><a href="#">Contact</a></li>
+              <li><Link to="/contact">Contact</Link></li>
             </ul>
           </div>
           <div className="footer-section">
@@ -100,25 +103,64 @@ function LandingPage({ onTryNow }) {
   )
 }
 
-function PredictionPage({ onBack }) {
+function AboutPage() {
   return (
-    <div className="prediction-page">
-      <header className="prediction-header">
-        <button className="back-button" onClick={onBack}>← Back</button>
-        <h1>Breast Cancer Diagnosis</h1>
-      </header>
-      <main className="prediction-main">
-        <div className="prediction-card">
-          <h2>Upload Your Data</h2>
-          <p>Please upload your medical data for analysis</p>
-          <div className="upload-area">
-            <input type="file" accept=".csv,.xlsx,.jpg,.jpeg,.png" id="file-input" style={{display: 'none'}} />
-            <button className="upload-btn" onClick={() => document.getElementById('file-input').click()}>Choose File</button>
+    <div className="custom-landing-bg">
+      <header className="custom-landing-header">
+        <div className="custom-logo-row">
+          <div className="custom-logo-circle">
+            <img src="/rib.jpg" alt="OncoScan logo" className="custom-logo-img" />
           </div>
+          <span className="custom-logo-text">OncoScan AI</span>
         </div>
-        <div className="prediction-card">
-          <h2>Prediction Results</h2>
-          <p>Your results will appear here after analysis</p>
+        <nav className="custom-nav">
+          <Link to="/" className="custom-nav-link">Home</Link>
+          <Link to="/detect" className="custom-nav-link">Detect</Link>
+          <Link to="/contact" className="custom-nav-link">Contact</Link>
+        </nav>
+      </header>
+      <main className="custom-landing-main">
+        <div className="card">
+          <h1>About OncoScan AI</h1>
+          <p>OncoScan AI is a cutting-edge medical technology platform that uses artificial intelligence to assist in the early detection of breast cancer. Our advanced machine learning algorithms analyze medical images and data to provide accurate, fast, and reliable predictions.</p>
+          <h2>Our Mission</h2>
+          <p>To make cancer detection more accessible, accurate, and early through the power of artificial intelligence, ultimately saving lives and improving healthcare outcomes.</p>
+          <h2>Technology</h2>
+          <p>We use state-of-the-art deep learning models, computer vision, and natural language processing to analyze medical reports, images, and patient data with unprecedented accuracy.</p>
+        </div>
+      </main>
+    </div>
+  )
+}
+
+function ContactPage() {
+  return (
+    <div className="custom-landing-bg">
+      <header className="custom-landing-header">
+        <div className="custom-logo-row">
+          <div className="custom-logo-circle">
+            <img src="/rib.jpg" alt="OncoScan logo" className="custom-logo-img" />
+          </div>
+          <span className="custom-logo-text">OncoScan AI</span>
+        </div>
+        <nav className="custom-nav">
+          <Link to="/" className="custom-nav-link">Home</Link>
+          <Link to="/about" className="custom-nav-link">About</Link>
+          <Link to="/detect" className="custom-nav-link">Detect</Link>
+        </nav>
+      </header>
+      <main className="custom-landing-main">
+        <div className="card">
+          <h1>Contact Us</h1>
+          <p>Get in touch with our team for any questions, support, or partnership opportunities.</p>
+          <div className="contact-info">
+            <h3>Email</h3>
+            <p>contact@oncoscan.ai</p>
+            <h3>Phone</h3>
+            <p>+1 (555) 123-4567</p>
+            <h3>Address</h3>
+            <p>123 Medical Tech Drive<br />Healthcare City, HC 12345</p>
+          </div>
         </div>
       </main>
     </div>
@@ -126,17 +168,17 @@ function PredictionPage({ onBack }) {
 }
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('landing')
-
-  if (currentPage === 'landing') {
-    return <LandingPage onTryNow={() => setCurrentPage('prediction')} />
-  }
-
-  if (currentPage === 'prediction') {
-    return <PredictionPage onBack={() => setCurrentPage('landing')} />
-  }
-
-  return <LandingPage onTryNow={() => setCurrentPage('prediction')} />
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/detect" element={<CancerDetection />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/breast" element={<AboutPage />} />
+      </Routes>
+    </Router>
+  )
 }
 
 export default App

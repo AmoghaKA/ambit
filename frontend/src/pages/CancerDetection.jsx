@@ -10,10 +10,13 @@ function CancerDetection() {
   const [ocrText, setOcrText] = useState("");
   const [features, setFeatures] = useState(null);
   const [shapPlotUrl, setShapPlotUrl] = useState(null);
+  const [valuesText, setValuesText] = useState("");
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
+
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
   const handlePredict = async () => {
     if (!selectedFile) {
@@ -21,8 +24,9 @@ function CancerDetection() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("image", selectedFile);
+  const formData = new FormData();
+  // backend expects field name 'file' (UploadFile param name in FastAPI)
+  formData.append("file", selectedFile);
 
     setLoading(true);
     setPrediction(null);
@@ -31,18 +35,46 @@ function CancerDetection() {
     setShapPlotUrl(null);
 
     try {
-      const res = await axios.post("http://localhost:8000/predict", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Let the browser set the Content-Type (with boundary)
+      const res = await axios.post(`${API_BASE}/predict_image`, formData);
 
       const data = res.data;
-      setPrediction({ result: data.label, confidence: (data.probability * 100).toFixed(2) });
+      setPrediction({ result: data.label || "Unknown", confidence: data.probability ? (data.probability * 100).toFixed(2) : null });
       setOcrText(data.ocr_text || "");
       setFeatures(data.features || null);
       setShapPlotUrl(data.shap_plot_url || null);
     } catch (err) {
       console.error(err);
-      alert("Prediction failed! Check backend server.");
+      // If server returned JSON with detail or message, show it
+      const serverMsg = err?.response?.data?.detail || err?.response?.data?.message || err?.message;
+      alert("Prediction failed: " + (serverMsg || "Check backend server and console."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleValuesPredict = async () => {
+    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    const raw = valuesText || "";
+    const nums = raw.split(/[\s,]+/).filter(Boolean).map(Number);
+    if (nums.some(isNaN)) {
+      alert("Please enter only numbers separated by spaces or commas.");
+      return;
+    }
+    if (!(nums.length === 10 || nums.length === 30)) {
+      alert("Please provide exactly 10 or 30 numeric values.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_BASE}/predict_values`, { values: nums });
+      const data = res.data;
+      setPrediction({ result: data.label || "Unknown", confidence: data.probability ? (data.probability * 100).toFixed(2) : null });
+      setFeatures(data.features || null);
+    } catch (err) {
+      console.error(err);
+      const serverMsg = err?.response?.data?.detail || err?.response?.data?.message || err?.message;
+      alert("Prediction failed: " + (serverMsg || "Check backend server."));
     } finally {
       setLoading(false);
     }
@@ -60,6 +92,20 @@ function CancerDetection() {
       <button className="predict-btn" onClick={handlePredict} disabled={loading}>
         {loading ? "Analyzing..." : "Predict"}
       </button>
+
+      <div className="manual-values">
+        <h3>Or paste 10 or 30 numeric values (space/comma separated)</h3>
+        <textarea
+          placeholder="Enter 10 or 30 numbers..."
+          value={valuesText}
+          onChange={(e) => setValuesText(e.target.value)}
+          rows={4}
+          style={{ width: "100%" }}
+        />
+        <button className="predict-btn" onClick={handleValuesPredict} disabled={loading}>
+          {loading ? "Predicting..." : "Predict from values"}
+        </button>
+      </div>
 
       {prediction && (
         <div className={`result-card ${prediction.result.toLowerCase()}`}>

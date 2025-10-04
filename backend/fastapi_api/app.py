@@ -12,8 +12,15 @@ try:
     import cloudpickle
 except ImportError:
     cloudpickle = None
+# optional OCR
+try:
+    from PIL import Image
+    import pytesseract
+except Exception:
+    Image = None
+    pytesseract = None
 
-MODEL_PATH = os.getenv("MODEL_PATH", "model/model.pkl")
+MODEL_PATH = os.getenv("MODEL_PATH", "model/breast_cancer_model.pkl")
 
 FEATURE_NAMES = [
     "mean radius","mean texture","mean perimeter","mean area","mean smoothness",
@@ -122,3 +129,62 @@ def predict_csv(file: UploadFile = File(...)):
     preview["prob_malignant"] = prob_m[:5]
     preview["label"] = label[:5]
     return {"count": int(len(df)), "positives": int(label.sum()), "results_preview": preview.to_dict(orient="records")}
+
+
+@app.post("/predict_image")
+async def predict_image(file: UploadFile = File(...)):
+    """Accepts an image (jpg/png) containing either labeled values or a table. Runs OCR and attempts to extract the 10 mean_* features used by the Streamlit demo's 10-feature pipeline.
+    Response: { label, probability, ocr_text, features }
+    """
+    ensure_model_loaded()
+    if Image is None or pytesseract is None:
+        raise HTTPException(status_code=500, detail="OCR dependencies not installed (Pillow/pytesseract)")
+    if not file.filename.lower().endswith((".png", ".jpg", ".jpeg", ".tiff", ".bmp")):
+        raise HTTPException(status_code=400, detail="Please upload an image file for OCR")
+    try:
+        contents = await file.read()
+        img = Image.open(io.BytesIO(contents)).convert("RGB")
+        ocr_text = pytesseract.image_to_string(img)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Could not read image: {e}")
+
+    # try to parse numbers from OCR text using simple regex similar to Streamlit helper
+    import re
+    NUM_RE = re.compile(r"[-+]?\d*\.\d+|\d+")
+    nums = NUM_RE.findall(ocr_text)
+
+    # If model expects 30 features (original pipeline), raise informative message; else if the loaded model has steps and expects 10 features, handle that
+    # We'll try to support both: if 30 numbers found => use /predict endpoint; if 10 numbers => use the model directly for the 10-feature pipeline
+    if len(nums) >= 30:
+        # map first 30 numbers to features and call existing predict route
+        arr = [float(x) for x in nums[:30]]
+        # reuse existing predict which returns prob_malignant and label int
+        resp = await predict(PredictRequest(features=arr))
+        # convert to consistent response: label string and probability
+        lbl = "Malignant" if resp.get("label", 0) == 1 else "Benign"
+        prob = resp.get("prob_malignant", None)
+        return {"label": lbl, "probability": prob, "ocr_text": ocr_text, "features": None}
+
+    # handle 10-feature pipeline
+    if len(nums) >= 10:
+        vals10 = [float(x) for x in nums[:10]]
+        # build input vector expected by pipeline: many pipelines expect DataFrame; try both
+        try:
+            X = np.array(vals10, dtype=float).reshape(1, -1)
+            if hasattr(_model, "predict_proba"):
+                proba = _model.predict_proba(X)[0]
+                # assume class ordering where index 1 corresponds to malignant probability if present
+                if len(proba) == 2:
+                    prob_malignant = float(proba[1])
+                else:
+                    prob_malignant = float(proba)
+            else:
+                raise HTTPException(status_code=500, detail="Loaded model has no predict_proba()")
+            lbl = "Malignant" if prob_malignant >= 0.5 else "Benign"
+            features_map = {f"feat_{i}": float(vals10[i]) for i in range(len(vals10))}
+            return {"label": lbl, "probability": prob_malignant, "ocr_text": ocr_text, "features": features_map}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Prediction failed: {e}")
+
+    # otherwise return OCR text and notice
+    return {"label": None, "probability": None, "ocr_text": ocr_text, "features": None, "note": "Not enough numeric values found (need 10 or 30)."}

@@ -1015,3 +1015,70 @@ footer {
     min-width: 100%;
   }
 }
+
+/* Contact page styles */
+.contact-info {
+  margin-top: 2rem;
+}
+
+.contact-info h3 {
+  color: var(--text);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.contact-info p {
+  color: var(--text);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* OCR and features display styles */
+.ocr-text-card, .features-card, .shap-card {
+  background: var(--card);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--border);
+}
+
+.ocr-text-card h3, .features-card h3, .shap-card h3 {
+  color: var(--text);
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.ocr-text-card pre {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.features-card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.features-card th, .features-card td {
+  padding: 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.features-card th {
+  background: var(--accent-solid);
+  color: white;
+  font-weight: 600;
+}
+
+.shap-plot {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
